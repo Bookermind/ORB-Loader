@@ -1,0 +1,18 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=)))***nfb180912***(((
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+      #      - ./data:/var/opt/mssql
+      - ./entrypoint.sh:/entrypoint.sh
+      - ./init.d:/docker-entrypoint-initdb.d
+    entrypoint: ["/bin/bash", "/entrypoint.sh"]
+
+volumes:
+  mssql_data:

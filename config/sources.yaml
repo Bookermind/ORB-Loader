@@ -1,0 +1,15 @@
+sapar:
+  file_type: csv
+  encoding: utf-8-sig
+  filename_pattern: 'sapar_.*\csv'
+  completion_strategy: 'footer'
+  footer_pattern: 'Trailer,(\d+)'
+  timeout_seconds: 300
+
+test:
+  file_type: csv
+  encoding: utf-8-sig
+  filename_pattern: 'test_.*\csv'
+  completion_strategy: control_file
+  control_file_pattern: '^test_control_\d{8}\.csv$'
+  timeout_seconds: 300
