@@ -1,0 +1,6 @@
+2026-04-01 21:20:05,569 - managers.file_watcher - INFO - Watching /home/simon/Work/ORB-V2/ORB-Loader/data/landing
+2026-04-01 21:20:16,495 - watchfiles.main - INFO - 1 change detected
+2026-04-01 21:25:19,497 - managers.file_watcher - WARNING - Companion timeout (300s): /home/simon/Work/ORB-V2/ORB-Loader/data/landing/sapar_20260101.csv
+2026-04-01 21:25:19,498 - managers.file_watcher - INFO - Moving file to quarentine: /home/simon/Work/ORB-V2/ORB-Loader/data/landing/sapar_20260101.csv -> /home/simon/Work/ORB-V2/ORB-Loader/data/quarantine/sapar_20260101.csv
+2026-04-01 21:25:19,565 - watchfiles.main - INFO - 1 change detected
+2026-04-01 21:25:51,395 - managers.file_watcher - INFO - Stopped by user

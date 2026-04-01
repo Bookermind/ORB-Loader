@@ -1,0 +1,20 @@
+sapar:
+  metadata:
+    file_type: csv
+    encoding: utf-8-sig
+    filename_pattern: 'sapar_.*\.csv'
+    delimiter: ","
+    timeout_seconds: 300
+    stable_seconds: 3
+  validation:
+    strategy:
+      type: file
+      pattern: 'sapar_.*\.trigger.csv'
+      key_pattern: '(\d{8})'
+    count_pattern: 'Count:\s*(\d+)'
+    amount_pattern: 'Amount:\s*([\\$£€]?[\d,]+\.?\d*)'
+    amount_column:
+      name: "Amount"
+  padding:
+    header_size: 1
+    footer_size: 2
