@@ -1,4 +1,5 @@
 import logging
+import os
 import re
 from pathlib import Path
 from typing import Any, Optional
@@ -7,7 +8,9 @@ import yaml
 
 _sources_cache = None
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-CONFIG_DIR = PROJECT_ROOT / "config"
+
+config_folder = os.getenv("CONFIG_FOLDER_PATH")
+CONFIG_DIR = Path(config_folder) if config_folder else PROJECT_ROOT / "config"
 SOURCES_CONFIG_PATH = CONFIG_DIR / "sources.yaml"
 
 logger = logging.getLogger(__name__)
