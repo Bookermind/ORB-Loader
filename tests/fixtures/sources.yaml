@@ -1,0 +1,39 @@
+sapar:
+  metadata:
+    file_type: csv
+    encoding: utf-8-sig
+    filename_pattern: 'sapar_\d{8}\.csv$'
+    delimiter: ","
+    timeout_seconds: 300
+    stable_seconds: 3
+  validation:
+    strategy:
+      type: file
+      pattern: 'sapar_\d{8}\.trigger\.csv$'
+      key_pattern: '(\d{8})'
+    count_pattern: 'Count:\s*(\d+)'
+    amount_pattern: 'Amount:\s*([\$£€]?[\d,]+\.?\d*)'
+    amount_column:
+      name: "Amount"
+  padding:
+    header_size: 1
+    footer_size: 2
+
+acme:
+  metadata:
+    file_type: txt
+    encoding: utf-8
+    filename_pattern: 'acme_\d{6}\.txt$'
+    delimiter: "|"
+    timeout_seconds: 600
+    stable_seconds: 5
+  validation:
+    strategy:
+      type: footer
+    count_pattern: 'RECORD COUNT=(\d+)'
+    amount_pattern: 'TOTAL AMOUNT=(\d+\.\d{2})'
+    amount_column:
+      position: 3
+  padding:
+    header_size: 1
+    footer_size: 1

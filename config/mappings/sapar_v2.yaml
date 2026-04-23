@@ -1,0 +1,23 @@
+sapar:
+  metadata:
+    startdate: 2025-01-01
+    enddate:
+  mappings:
+    fname:
+      source: fullname
+      transform: split
+      args:
+        index: 0
+        delimiter: ' '
+    lname:
+      source: fullname
+      transform: split
+      args:
+        index: 1
+        delimiter: ' '
+    dob:
+      source: date_of_birth
+      transform: date_format
+      args:
+        input_format: '%Y%m%d'
+        output_format: '%d/%m/%Y'

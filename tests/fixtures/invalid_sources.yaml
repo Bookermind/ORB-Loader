@@ -1,0 +1,99 @@
+# Invalid configurations for testing validation
+
+missing_file_type:
+  metadata:
+    # file_type is missing (required field)
+    filename_pattern: 'test_\d+\.csv$'
+  validation:
+    strategy:
+      type: footer
+    count_pattern: 'COUNT=(\d+)'
+    amount_pattern: 'AMOUNT=(\d+)'
+    amount_column:
+      name: "Amount"
+
+missing_filename_pattern:
+  metadata:
+    file_type: csv
+    # filename_pattern is missing (required field)
+  validation:
+    strategy:
+      type: footer
+    count_pattern: 'COUNT=(\d+)'
+    amount_pattern: 'AMOUNT=(\d+)'
+    amount_column:
+      name: "Amount"
+
+missing_validation_strategy:
+  metadata:
+    file_type: csv
+    filename_pattern: 'test_\d+\.csv$'
+  validation:
+    # strategy is missing (required field)
+    count_pattern: 'COUNT=(\d+)'
+    amount_pattern: 'AMOUNT=(\d+)'
+    amount_column:
+      name: "Amount"
+
+footer_missing_count_pattern:
+  metadata:
+    file_type: csv
+    filename_pattern: 'test_\d+\.csv$'
+  validation:
+    strategy:
+      type: footer
+    # count_pattern is missing (required for footer strategy)
+    amount_pattern: 'AMOUNT=(\d+)'
+    amount_column:
+      name: "Amount"
+
+footer_missing_amount_pattern:
+  metadata:
+    file_type: csv
+    filename_pattern: 'test_\d+\.csv$'
+  validation:
+    strategy:
+      type: footer
+    count_pattern: 'COUNT=(\d+)'
+    # amount_pattern is missing (required for footer strategy)
+    amount_column:
+      name: "Amount"
+
+file_strategy_missing_pattern_and_suffix:
+  metadata:
+    file_type: csv
+    filename_pattern: 'test_\d+\.csv$'
+  validation:
+    strategy:
+      type: file
+      # Neither pattern nor suffix defined (one required for file strategy)
+      key_pattern: '(\d+)'
+    count_pattern: 'COUNT=(\d+)'
+    amount_pattern: 'AMOUNT=(\d+)'
+    amount_column:
+      name: "Amount"
+
+file_strategy_missing_key_pattern:
+  metadata:
+    file_type: csv
+    filename_pattern: 'test_\d+\.csv$'
+  validation:
+    strategy:
+      type: file
+      pattern: 'test_\d+\.trigger$'
+      # key_pattern is missing (required for file strategy)
+    count_pattern: 'COUNT=(\d+)'
+    amount_pattern: 'AMOUNT=(\d+)'
+    amount_column:
+      name: "Amount"
+
+missing_amount_column:
+  metadata:
+    file_type: csv
+    filename_pattern: 'test_\d+\.csv$'
+  validation:
+    strategy:
+      type: footer
+    count_pattern: 'COUNT=(\d+)'
+    amount_pattern: 'AMOUNT=(\d+)'
+    # amount_column is completely missing (name OR position required)

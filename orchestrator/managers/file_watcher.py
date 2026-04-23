@@ -1,12 +1,10 @@
 import hashlib
 import logging
-import os
-import tempfile
 import threading
-from datetime import datetime
 from pathlib import Path
 from typing import Callable, Optional
 
+from utils.utilities import atomic_move
 from watchfiles import Change, watch
 
 from .companion_tracker import CompanionTracker
@@ -64,14 +62,16 @@ class FileWatcher:
         quarantine_dir: Optional[Path] = None,
         unknown_dir: Optional[Path] = None,
         recursive: bool = False,
+        force_polling: bool = True,
     ):
         self.registry = SourceRegistry(load_sources())
         self.callback = callback
         self.watch_dir = watch_dir
         self.recursive = recursive
+        self.force_polling = force_polling
 
         self.input_dir = input_dir or watch_dir.parent / "input"
-        self.quarantine_dir = quarantine_dir or watch_dir.parent / "quarentine"
+        self.quarantine_dir = quarantine_dir or watch_dir.parent / "quarantine"
         self.unknown_dir = unknown_dir or self.quarantine_dir / "unknown"
 
         self.companion_tracker = CompanionTracker(
@@ -97,6 +97,7 @@ class FileWatcher:
                 debounce=100,
                 step=50,
                 recursive=self.recursive,
+                force_polling=self.force_polling,
             ):
                 self._handle_changes(changes)
         except KeyboardInterrupt:
@@ -114,11 +115,22 @@ class FileWatcher:
         for change_type, filepath in changes:
             if change_type not in (Change.added, Change.modified):
                 continue
-            filename = Path(filepath).name
+            
+            logger.debug("Change detected: %s - %s", change_type.name, filepath)
+            path = Path(filepath)
+            if not path.is_file():
+                logger.debug("Skipping non-file change: %s", filepath)
+                continue
+
+            filename = path.name
+            logger.debug("Processing file: %s", filename)
+
             config = self.registry.match(filename)
             if config is None:
+                logger.debug("No config match for file: %s", filename)
                 self._handle_unmatched(filepath, filename)
             else:
+                logger.debug("Matched config '%s' for file: %s", config.name, filename)
                 self.data_handler.on_event(filepath, config)
 
     def _handle_unmatched(self, filepath: str, filename: str) -> None:
@@ -127,7 +139,7 @@ class FileWatcher:
             comp_config, _key = result
             self.companion_handler.on_event(filepath, comp_config)
         else:
-            logger.warning("Unknown file. Moving to quarentine: %s", filepath)
+            logger.warning("Unknown file. Moving to quarantine: %s", filepath)
             self._move_to_unknown(filepath)
 
     def _on_data_stable(self, filepath: str, config: SourceConfig) -> None:
@@ -139,8 +151,8 @@ class FileWatcher:
                 return
             self.companion_tracker.mark_data_stable(config.name, key, filepath, config)
         else:
-            self._move_to_input(filepath)
-            self.callback(filepath, None, config)
+            input_path = self._move_to_input(filepath)
+            self.callback(input_path, None, config)
 
     def _on_companion_stable(self, filepath: str, config: SourceConfig) -> None:
         key = self.companion_tracker.extract_key(Path(filepath).name, config)
@@ -153,10 +165,9 @@ class FileWatcher:
     def _on_pair_ready(
         self, data_path: str, companion_path: Optional[str], config: SourceConfig
     ) -> None:
-        self._move_to_input(data_path)
-        if companion_path:
-            self._move_to_input(companion_path)
-        self.callback(data_path, companion_path, config)
+        input_data_path = self._move_to_input(data_path)
+        input_companion_path = self._move_to_input(companion_path) if companion_path else None
+        self.callback(input_data_path, input_companion_path, config)
 
     def _on_timeout(self, data_path: str, config: SourceConfig) -> None:
         logger.warning("Companion timeout (%ds): %s", config.timeout_seconds, data_path)
@@ -166,72 +177,18 @@ class FileWatcher:
         logger.warning("Orphaned companion file: %s", companion_path)
         self._move_to_quarentine(companion_path)
 
-    def _generate_file_hash(self, filepath: str) -> bytes:
-        sha256 = hashlib.sha256()
-        with open(filepath, "rb") as f:
-            while chunk := f.read(8192):
-                sha256.update(chunk)
-        return sha256.digest()
-
-    def _generate_unique_filename(self, source_path: Path, dest_path: Path) -> Path:
-        if not dest_path.exists():
-            # There is no file in the destination - we do not need to make this new file unique
-            return dest_path
-
-        # File exists in the destination already - build a unique filename to avoid overwrites
-
-        stem = source_path.stem
-        suffix = source_path.suffix
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        unique_filename = f"{stem}_{timestamp}{suffix}"
-        unique_filepath = dest_path.parent / unique_filename
-
-        return unique_filepath
-
-    def atomic_move(
-        self, source_path: Path, dest_path: Path, generate_unique: bool = False
-    ) -> Path:
-        if not source_path.exists():
-            logger.error(
-                "File has disappeared before a move could be attempted: %s", source_path
-            )
-
-        dest_folder = dest_path.parent
-        dest_folder.mkdir(parents=True, exist_ok=True)
-
-        if generate_unique:
-            unique_dest_path = self._generate_unique_filename(source_path, dest_path)
-        else:
-            unique_dest_path = dest_path
-
-        # Use tempfile to ensure an atomic move
-        try:
-            os.rename(source_path, unique_dest_path)
-        except OSError:
-            # Fall back to copy + delete for cross filesystem moves
-            with tempfile.NamedTemporaryFile(dir=dest_folder, delete=False) as tmp:
-                with open(source_path, "rb") as src:
-                    tmp.write(src.read())
-                tmp_path = tmp.name
-
-            os.rename(tmp_path, dest_path)
-            source_path.unlink()
-        return unique_dest_path
-
-    def _move_to_input(self, filepath: str) -> None:
+    def _move_to_input(self, filepath: str) -> str:
         dest = self.input_dir / Path(filepath).name
         logger.info("Moving file to input: %s -> %s", filepath, dest)
-        self.atomic_move(Path(filepath), Path(dest), True)
-        # shutil.move(filepath, dest)
+        result = atomic_move(Path(filepath), Path(dest), True)
+        return str(result)
 
     def _move_to_quarentine(self, filepath: str) -> None:
         dest = self.quarantine_dir / Path(filepath).name
         logger.info("Moving file to quarentine: %s -> %s", filepath, dest)
-        self.atomic_move(Path(filepath), Path(dest), True)
-        # shutil.move(filepath, dest)
+        atomic_move(Path(filepath), Path(dest), True)
 
     def _move_to_unknown(self, filepath: str) -> None:
         dest = self.unknown_dir / Path(filepath).name
         logger.info("Moving file to unknown folder: %s -> %s", filepath, dest)
-        self.atomic_move(Path(filepath), Path(dest), True)
-        # shutil.move(filepath, dest)
+        atomic_move(Path(filepath), Path(dest), True)

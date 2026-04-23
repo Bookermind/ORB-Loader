@@ -2,15 +2,16 @@ sapar:
   metadata:
     file_type: csv
     encoding: utf-8-sig
-    filename_pattern: 'sapar_.*\.csv'
+    filename_pattern: 'sapar_\d{8}\.csv$'
     delimiter: ","
+    date_pattern: '(\d{8})'
+    date_format: '%Y%m%d'
     timeout_seconds: 300
     stable_seconds: 3
+    has_header: true
   validation:
     strategy:
-      type: file
-      pattern: 'sapar_.*\.trigger.csv'
-      key_pattern: '(\d{8})'
+      type: footer
     count_pattern: 'Count:\s*(\d+)'
     amount_pattern: 'Amount:\s*([\\$£€]?[\d,]+\.?\d*)'
     amount_column:
@@ -18,3 +19,35 @@ sapar:
   padding:
     header_size: 1
     footer_size: 2
+sapar2:
+  metadata:
+    file_type: csv
+    encoding: utf-8-sig
+    filename_pattern: 'sapar2_\d{8}\.csv$'
+    delimiter: ","
+    date_pattern: '(\d{8})'
+    date_format: '%Y%m%d'
+    timeout_seconds: 300
+    stable_seconds: 3
+    has_header: false
+  validation:
+    strategy:
+      type: footer
+    count_pattern: 'Count:\s*(\d+)'
+    amount_pattern: 'Amount:\s*([\\$£€]?[\d,]+\.?\d*)'
+    amount_column:
+      position: 2
+  padding:
+    header_size: 0
+    footer_size: 2
+sapar3:
+  metadata:
+    file_type: fixed-width
+    encoding: utf-8-sig
+    filename_pattern: 'sapar3_\d{8}\.txt$'
+    date_pattern: '(\d{8})'
+    date_format: '%Y%m%d'
+    column_specs: [[0, 10], [10, 20], [20, 30], [30, 40]]
+    has_header: False
+    timeout_seconds: 300
+    stable_seconds: 3

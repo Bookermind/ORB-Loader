@@ -9,8 +9,8 @@ import yaml
 _sources_cache = None
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
-config_folder = os.getenv("CONFIG_FOLDER_PATH")
-CONFIG_DIR = Path(config_folder) if config_folder else PROJECT_ROOT / "config"
+CONFIG_FOLDER = os.getenv("CONFIG_FOLDER_PATH")
+CONFIG_DIR = Path(CONFIG_FOLDER) if CONFIG_FOLDER else PROJECT_ROOT / "config"
 SOURCES_CONFIG_PATH = CONFIG_DIR / "sources.yaml"
 
 logger = logging.getLogger(__name__)
@@ -57,6 +57,14 @@ class SourceConfig:
             raise ValueError(
                 f"Source '{self.name}': metadata.filename_pattern is required"
             )
+        if not self.date_pattern:
+            raise ValueError(
+                f"Source '{self.name}': metadata.date_pattern is required"
+            )
+        if not self.date_format:
+            raise ValueError(
+                f"Source '{self.name}': metadata.date_format is required"
+            )
         # For footer completion strategy the config file must define a count_pattern
         if self.validation_strategy == "footer":
             c_pattern = self.count_pattern is not None
@@ -98,6 +106,22 @@ class SourceConfig:
     @property
     def file_type(self) -> str:
         return self._get_nested("metadata.file_type")
+    
+    @property
+    def has_header(self) -> bool:
+        return self._get_nested("metadata.has_header", True)
+    
+    @property
+    def date_pattern(self) -> str:
+        return self._get_nested("metadata.date_pattern")
+    
+    @property
+    def date_format(self) -> str:
+        return self._get_nested("metadata.date_format")
+    
+    @property
+    def delimiter(self) -> Optional[str]:
+        return self._get_nested("metadata.delimiter")
 
     @property
     def encoding(self) -> str:
@@ -114,6 +138,10 @@ class SourceConfig:
     @property
     def stable_seconds(self) -> int:
         return self._get_nested("metadata.stable_seconds", 3)
+    
+    @property
+    def column_specs(self) -> Optional[list[tuple[int, int]]]:
+        return self._get_nested("metadata.column_specs")
 
     # --- Validation properties ---
     @property

@@ -1,0 +1,93 @@
+sapar:
+  fname:
+    source: full_name
+    transform: split
+    args:
+      index: 0
+      delimiter: ' '
+  lname:
+    source: full_name
+    transform: split
+    args:
+      index: 1
+      delimiter: ' '
+  dob:
+    source: date_of_birth
+    transform: date_format
+    args:
+      input_format: '%Y%m%d'
+      output_format: '%d/%m/%Y'
+  simple:
+    source: text
+  simple2: text
+  complex_date:
+    source: complex
+    transform:
+      - type: split
+        args:
+          index: 2
+          delimiter: ','
+      - type: date_format
+        args:
+          input_format: '%Y%m%d'
+          output_format: '%d/%m/%Y'
+  sap_field1:
+    source: sap_style
+    transform: substring
+    args:
+      start: 0
+      length: 6
+  sap_field2:
+    source: sap_style
+    transform: substring
+    args:
+      start: 6
+      length: 6
+  sap_field3:
+    source: sap_style
+    transform: substring
+    args:
+      start: 12
+      length: 3
+  # Example: Split complex date, format it, then concat with full_name
+  name_with_complex_date:
+    source: complex
+    transform:
+      - type: split
+        args:
+          index: 2           # Get the third portion (date: 19800711)
+          delimiter: ','
+      - type: date_format
+        args:
+          input_format: '%Y%m%d'
+          output_format: '%d/%m/%Y'
+      - type: concat         # Concatenate the formatted date with full_name
+        args:
+          values:
+            - $full_name     # Field reference to another field
+            - " - "          # Static text separator
+            - $value         # The result from previous transforms (formatted date)
+          separator: ""
+  # Example: Multiple named intermediate results
+  multi_value_demo:
+    source: complex
+    transform:
+      - type: split
+        as: raw_date         # Name this result "raw_date"
+        args:
+          index: 2
+          delimiter: ','
+      - type: date_format    # This operates on raw_date
+        as: formatted_date   # Name this result "formatted_date"
+        args:
+          input_format: '%Y%m%d'
+          output_format: '%d/%m/%Y'
+      - type: concat         # Can reference both named results
+        args:
+          values:
+            - $full_name
+            - " | Raw: "
+            - $raw_date          # References the raw date (19800711)
+            - " | Formatted: "
+            - $formatted_date    # References the formatted date (11/07/1980)
+          separator: ""

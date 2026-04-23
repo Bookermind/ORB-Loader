@@ -1,0 +1,10 @@
+// .vscode/settings.json
+{
+    "files.associations": {
+        "*.sqlt": "sql" // Syntax highlighting for SQL templates
+    },
+    // Disable formatting globally for this workspace
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false
+}

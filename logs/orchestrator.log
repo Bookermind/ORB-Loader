@@ -1,6 +1,13 @@
-2026-04-01 21:20:05,569 - managers.file_watcher - INFO - Watching /home/simon/Work/ORB-V2/ORB-Loader/data/landing
-2026-04-01 21:20:16,495 - watchfiles.main - INFO - 1 change detected
-2026-04-01 21:25:19,497 - managers.file_watcher - WARNING - Companion timeout (300s): /home/simon/Work/ORB-V2/ORB-Loader/data/landing/sapar_20260101.csv
-2026-04-01 21:25:19,498 - managers.file_watcher - INFO - Moving file to quarentine: /home/simon/Work/ORB-V2/ORB-Loader/data/landing/sapar_20260101.csv -> /home/simon/Work/ORB-V2/ORB-Loader/data/quarantine/sapar_20260101.csv
-2026-04-01 21:25:19,565 - watchfiles.main - INFO - 1 change detected
-2026-04-01 21:25:51,395 - managers.file_watcher - INFO - Stopped by user
+2026-04-16 08:13:22 - managers.watchdog - INFO - Writing Initial heartbeat to /tmp/orchestrator_heartbeat
+2026-04-16 08:13:23 - managers.watchdog - INFO - Heartbeat Thread started, writing to /tmp/orchestrator_heartbeat
+2026-04-16 08:13:23 - managers.file_watcher - INFO - Watching /app/data/landing
+2026-04-16 08:13:41 - managers.file_watcher - INFO - Moving file to input: /app/data/landing/sapar_20260101.csv -> /app/data/input/sapar_20260101.csv
+2026-04-16 08:13:41 - __main__ - INFO - [PAIR READY] /app/data/input/sapar_20260101.csv (source: sapar, companion: none)
+2026-04-16 08:13:41 - loader.config.mappings_config - WARNING - Mapping file sapar2_v2.yaml does not contain key 'sapar' - skipping
+2026-04-16 08:13:41 - loader.config.mappings_config - INFO - Resolved mapping for 'sapar' date 2026-01-01 -> sapar_v2.yaml
+2026-04-16 08:13:41 - loader.main - WARNING - There are unexpected fields present in the data file: {'amount'}
+2026-04-16 08:13:41 - loader.main - INFO - Field validation passed for file 'sapar_20260101.csv'
+2026-04-16 08:13:41 - loader.validators.record_validator - INFO - Record validation passed for file /app/data/input/sapar_20260101.csv: expected count 3, actual count 3; expected amount 140, actual amount 140
+2026-04-16 08:13:41 - loader.main - INFO - Record count and amount validation passed for file 'sapar_20260101.csv'
+2026-04-16 08:13:41 - __main__ - INFO - Loader Complete: /app/data/input/sapar_20260101.csv processed successfully
+2026-04-16 08:13:41 - __main__ - INFO - Moved /app/data/input/sapar_20260101.csv to processed folder

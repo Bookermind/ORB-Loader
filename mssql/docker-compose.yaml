@@ -4,7 +4,11 @@ services:
     container_name: mssql
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=)))***nfb180912***(((
+      - SA_PASSWORD=${LOGGING_DB_PASSWORD}
+      - DB_NAME=${LOGGING_DB_NAME}
+      - DB_USER=${LOGGING_DB_USER}
+      - ADMIN_DB_SCHEMA=${LOGGING_DB_SCHEMA}
+      - LOOKUP_DB_SCHEMA=${LOOKUP_DB_SCHEMA}
     ports:
       - "1433:1433"
     volumes:
@@ -12,7 +16,13 @@ services:
       #      - ./data:/var/opt/mssql
       - ./entrypoint.sh:/entrypoint.sh
       - ./init.d:/docker-entrypoint-initdb.d
-    entrypoint: ["/bin/bash", "/entrypoint.sh"]
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U $$DB_USER -P \"$$SA_PASSWORD\" -Q 'SELECT 1' || exit 1" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+    entrypoint: [ "/bin/bash", "/entrypoint.sh" ]
 
 volumes:
   mssql_data:

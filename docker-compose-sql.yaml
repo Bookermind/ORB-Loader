@@ -1,0 +1,74 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${LOGGING_DB_PASSWORD}
+      - DB_NAME=${LOGGING_DB_NAME}
+      - DB_USER=${LOGGING_DB_USER}
+      - DB_SCHEMA=${LOGGING_DB_SCHEMA}
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+      #      - ./data:/var/opt/mssql
+      - ./mssql/entrypoint.sh:/entrypoint.sh
+      - ./mssql/init.d:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$SA_PASSWORD\" -Q 'SELECT 1' || exit 1" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+    entrypoint: [ "/bin/bash", "/entrypoint.sh" ]
+
+  orchestrator:
+    build:
+      context: .
+      dockerfile: DockerFile
+    container_name: orchestrator
+    environment:
+      - LANDING_FOLDER_PATH=${LANDING_FOLDER_PATH}
+      - INPUT_FOLDER_PATH=${INPUT_FOLDER_PATH}
+      - QUARANTINE_FOLDER_PATH=${QUARANTINE_FOLDER_PATH}
+      - INVALID_FOLDER_PATH=${INVALID_FOLDER_PATH}
+      - UNKNOWN_FOLDER_PATH=${UNKNOWN_FOLDER_PATH}
+      - LOG_FOLDER_PATH=${LOG_FOLDER_PATH}
+      - DATA_FOLDER_PATH=${DATA_FOLDER_PATH}
+      - CONFIG_FOLDER_PATH=${CONFIG_FOLDER_PATH}
+      - PROCESSED_FOLDER_PATH=${PROCESSED_FOLDER_PATH}
+      # Database connection for SQL logging (if enabled)
+      - MSSQL_ENABLED=${MSSQL_ENABLED}
+      - LOGGING_DB_DRIVER=${LOGGING_DB_DRIVER}
+      - LOGGING_DB_HOST=${LOGGING_DB_HOST}
+      - LOGGING_DB_NAME=${LOGGING_DB_NAME}
+      - LOGGING_DB_USER=${LOGGING_DB_USER}
+      - LOGGING_DB_PASSWORD=${LOGGING_DB_PASSWORD}
+      - LOGGING_DB_PORT=${LOGGING_DB_PORT}
+
+      # Logging levels
+      - CONSOLE_LOG_LEVEL=${CONSOLE_LOG_LEVEL}
+      - FILE_LOG_LEVEL=${FILE_LOG_LEVEL}
+      - HEARTBEAT=${HEARTBEAT}
+    volumes:
+      - ./data/landing:${LANDING_FOLDER_PATH}
+      - ./data/input:${INPUT_FOLDER_PATH}
+      - ./data/quarantine/invalid:${INVALID_FOLDER_PATH}
+      - ./data/quarantine/unknown:${UNKNOWN_FOLDER_PATH}
+      - ./data/processed:${PROCESSED_FOLDER_PATH}
+      - ./config:${CONFIG_FOLDER_PATH}
+      - ./logs:${LOG_FOLDER_PATH}
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/orchestrator_heartbeat && [ $$(( $$(date +%s) - $$(date -r /tmp/orchestrator_heartbeat +%s) )) -lt 60 ] || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+    depends_on:
+      mssql:
+        condition: service_healthy
+
+volumes:
+  mssql_data:

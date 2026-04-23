@@ -1,4 +1,11 @@
 watchfiles>=1.0.0
 pyodbc>=4.0.0
 PyYAML>=6.0
-mypy >= 1.20
+mypy>=1.20
+pandas>=3.0.2
+
+# Testing Dependencies
+pytest>=7.0
+pytest-mock>=3.10
+pytest-cov>=4.0
+freezegun>=1.2.2

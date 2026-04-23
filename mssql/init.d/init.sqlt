@@ -1,0 +1,141 @@
+if exists (select name
+from sys.databases
+where name = N'$(DB_NAME)')
+begin
+    alter database $(DB_NAME) set single_user with rollback immediate
+    drop database $(DB_NAME)
+end
+
+if not exists (select name
+from sys.databases
+where name = N'$(DB_NAME)')
+begin
+    create database $(DB_NAME)
+end
+go
+
+use $(DB_NAME)
+go
+
+if not exists (
+    select *
+    from sys.schemas
+    where name = N'$(ADMIN_DB_SCHEMA)'
+)
+begin
+    exec('create schema $(ADMIN_DB_SCHEMA)')
+end
+go
+
+if not exists (
+    select *
+    from sys.schemas
+    where name = N'$(LOOKUP_DB_SCHEMA)'
+)
+begin
+    exec('create schema $(LOOKUP_DB_SCHEMA)')
+end
+go
+
+if object_id('$(ADMIN_DB_SCHEMA).FileLog', 'U') is null
+begin
+    create table $(ADMIN_DB_SCHEMA).FileLog
+    (
+        FileID int identity(1,1) primary key,   -- Unique Id for this data Object
+        FileName nvarchar(255) not null,        -- The name of the unique file 
+        FileSource nvarchar(100) not null,      -- The source of the file as configured in sources.yaml
+        FileHash binary(32) not null,           -- The SHA256 hash of the file contents
+        FileDate datetime not null,             -- The creation date of the file (gathered from the filename)
+        Detected_at datetime not null,          -- The datetime that the file was detected AS STABLE and move to input folder
+        StageID int null,                       -- The stage of processing ( foreign key on StageLog)
+        Stage_start datetime null,              -- The datetime that the file started processing for the current stage
+        Stage_end datetime null,                -- The datetime that the file finished processing for the current stage
+        Result nvarchar(10) null                -- The result of the processing (Success, Failed, etc.)
+    );
+end
+go
+
+if object_id('$(ADMIN_DB_SCHEMA).StageLog' , 'U') is null
+begin
+    create table $(ADMIN_DB_SCHEMA).StageLog
+    (
+        StageID int identity(1,1) primary key,  -- Unique ID for this stage
+        FileID int not null,                    -- The unique ID for the file being processed (foreign key to FileLog)
+        Stage int not null,                     -- The stage number (1 for initial processing, 2 for transformation, etc.)   
+        Expected_count int null,                -- The expected count of records to be processed in this stage (if applicable)  
+        Expected_amount decimal(18,2) null,     -- The expected amount to be processed in this stage (if applicable)
+        Actual_count int null,                  -- The actual count of records processed in this stage (if applicable)
+        Actual_amount decimal(18,2) null        -- The actual amount processed in this stage (if applicable)
+    )
+end
+go
+
+-- Create lookup table for Stages
+if object_id('$(LOOKUP_DB_SCHEMA).Stage', 'U') is null
+begin
+    create table $(LOOKUP_DB_SCHEMA).Stage
+    (
+        lkupStageID int not null primary key,   -- Unique ID for each stage type
+        StageName varchar(20) not null          -- Name of the stage
+    );
+
+    -- Populate with static reference data
+    insert into $(LOOKUP_DB_SCHEMA).Stage (lkupStageID, StageName)
+    values
+        (0, 'Detection'),
+        (1, 'Ingestion'),
+        (2, 'Transformation');
+end
+go
+
+-- Foreign Key constraint creation
+if not exists (
+    select 1
+    from sys.foreign_keys
+    where name = 'FK_StageLog_FileLog_FileID'
+    and parent_object_id = object_id('$(ADMIN_DB_SCHEMA).StageLog')
+)
+begin
+    alter table $(ADMIN_DB_SCHEMA).StageLog
+    add constraint FK_StageLog_FileLog_FileID
+    foreign key (FileID)
+    references $(ADMIN_DB_SCHEMA).FileLog(FileID)
+    on delete cascade                           -- stagelog records will be deleted on deletion of a filelog record
+end
+go
+
+-- Foreign Key constraint for Stage lookup
+if not exists (
+    select 1
+    from sys.foreign_keys
+    where name = 'FK_StageLog_Stage_lkupStageID'
+    and parent_object_id = object_id('$(ADMIN_DB_SCHEMA).StageLog')
+)
+begin
+    alter table $(ADMIN_DB_SCHEMA).StageLog
+    add constraint FK_StageLog_Stage_lkupStageID
+    foreign key (Stage)
+    references $(LOOKUP_DB_SCHEMA).Stage(lkupStageID)
+end
+go
+
+-- Create application logging table for ORB-Loader orchestrator
+if object_id('$(ADMIN_DB_SCHEMA).OrchestratorLogs', 'U') is null
+begin
+    create table $(ADMIN_DB_SCHEMA).OrchestratorLogs
+    (
+        LogID int identity(1,1) primary key,
+        Timestamp datetime not null default getdate(),
+        LogLevel nvarchar(20) not null,
+        LoggerName nvarchar(255) not null,
+        Message nvarchar(max) not null,
+        Module nvarchar(100) null,
+        FunctionName nvarchar(100) null,
+        LineNumber int null,
+
+        -- Add indexes for common queries
+        index IX_OrchestratorLogs_Timestamp nonclustered(Timestamp desc),
+        index IX_OrchestratorLogs_LogLevel nonclustered(LogLevel)
+    );
+end
+go
