@@ -4,41 +4,41 @@ import os
 import tempfile
 from datetime import datetime
 from pathlib import Path
-import pyodbc
+from typing import Optional
+
+import mssql_python
 
 logger = logging.getLogger(__name__)
 
+
 def build_connection_string(
-        db_driver: str = None,
-        db_host: str = None,
-        db_name: str = None,
-        db_user: str = None,
-        db_password: str = None,
-        db_port: int = 1433,
+    db_host: Optional[str] = None,
+    db_name: Optional[str] = None,
+    db_user: Optional[str] = None,
+    db_password: Optional[str] = None,
+    db_port: int = 1433,
 ) -> str | None:
     """
     Build a SQL connection string from parameters of environment variables.
     Args:
-        db_driver: Database driver.
         db_host: Database host address.
         db_name: Database name.
         db_user: Database username.
         db_password: Database password.
-        db_port: Database port number (default is 1433 for SQL Server). 
+        db_port: Database port number (default is 1433 for SQL Server).
     Returns:
         A SQL connection string or None if required parameters are missing.
     """
-    driver = db_driver or os.getenv("LOGGING_DB_DRIVER")
     host = db_host or os.getenv("LOGGING_DB_HOST")
     name = db_name or os.getenv("LOGGING_DB_NAME")
     port = db_port or int(os.getenv("LOGGING_DB_PORT", 1433))
     user = db_user or os.getenv("LOGGING_DB_USER")
     password = db_password or os.getenv("LOGGING_DB_PASSWORD")
 
-    if not all([driver, host, name, user, password]):
+    if not all([host, name, user, password]):
         missing = [
-            var for var, val in [
-                ("LOGGING_DB_DRIVER", driver),
+            var
+            for var, val in [
                 ("LOGGING_DB_HOST", host),
                 ("LOGGING_DB_NAME", name),
                 ("LOGGING_DB_USER", user),
@@ -46,32 +46,31 @@ def build_connection_string(
             ]
             if not val
         ]
-        logger.warning("Missing database connection parameters: %s.", ", ".join(missing))
+        logger.warning(
+            "Missing database connection parameters: %s.", ", ".join(missing)
+        )
         return None
-    
-    return (
-        f"DRIVER={{{driver}}};"
-        f"SERVER={host},{port};"
-        f"DATABASE={name};"
-        f"UID={user};"
-        f"PWD={password}"
-    )
 
-def get_db_connection(connection_string: str) -> pyodbc.Connection:
+    return f"SERVER={host},{port};DATABASE={name};UID={user};PWD={password};TrustServerCertificate=yes"
+
+
+def get_db_connection(connection_string: str) -> mssql_python.Connection:
     """
-    Establish and return a pyodbc connection.
+    Establish and return a mssql_python connection.
     Args:
         connection_string: The SQL connection string.
     Return:
-        A pyodbc Connection object.
+        A mssql_python Connection object.
     """
-    return pyodbc.connect(connection_string, timeout=5)
+    return mssql_python.connect(connection_string, timeout=5)
+
 
 def str_to_bool(value: str) -> bool:
     """
     Convert a string value to a boolean.
     """
     return value.lower() in ("true", "1", "yes", "on", "enabled")
+
 
 def generate_unique_filename(source_path: Path, dest_path: Path) -> Path:
     """
@@ -85,7 +84,7 @@ def generate_unique_filename(source_path: Path, dest_path: Path) -> Path:
     """
     if not dest_path.exists():
         return dest_path
-    
+
     stem = source_path.stem
     suffix = source_path.suffix
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -94,8 +93,9 @@ def generate_unique_filename(source_path: Path, dest_path: Path) -> Path:
 
     return unique_filepath
 
+
 def atomic_move(
-        source_path: Path, dest_path: Path, generate_unique: bool = False
+    source_path: Path, dest_path: Path, generate_unique: bool = False
 ) -> Path:
     """
     Atomically move a file from source to destination. If generate_unique is True, it will generate a unique filename if the destination file already exists.
@@ -130,6 +130,7 @@ def atomic_move(
         os.rename(tmp_path, unique_dest_path)
         source_path.unlink()
     return unique_dest_path
+
 
 def generate_file_hash(filepath: str) -> bytes:
     sha256 = hashlib.sha256()

@@ -40,14 +40,3 @@ sapar2:
   padding:
     header_size: 0
     footer_size: 2
-sapar3:
-  metadata:
-    file_type: fixed-width
-    encoding: utf-8-sig
-    filename_pattern: 'sapar3_\d{8}\.txt$'
-    date_pattern: '(\d{8})'
-    date_format: '%Y%m%d'
-    column_specs: [[0, 10], [10, 20], [20, 30], [30, 40]]
-    has_header: False
-    timeout_seconds: 300
-    stable_seconds: 3

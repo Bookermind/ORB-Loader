@@ -1,18 +1,27 @@
-import datetime
 import logging
 import os
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
+from typing import Optional
+
+# Add project root to sys.path before importing local modules
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
 
 from managers.file_watcher import FileWatcher
 from managers.source_identifier import SourceConfig
-from orch_logging.logging_config import setup_logging, add_sql_handler
 from managers.watchdog import create_heartbeat
-from utils.utilities import str_to_bool, atomic_move, build_connection_string, get_db_connection, generate_file_hash
+from orch_logging.logging_config import add_sql_handler, setup_logging
+from utils.utilities import (
+    atomic_move,
+    build_connection_string,
+    generate_file_hash,
+    get_db_connection,
+    str_to_bool,
+)
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
 from loader.main import run as run_loader
 
 HEARTBEAT_ENABLED = str_to_bool(os.getenv("HEARTBEAT", "False"))
@@ -82,6 +91,7 @@ def on_file_stable(
     # Files are already in data/input/
     # --- downstream processing here ---
     try:
+        file_id: Optional[int] = None
         if MSSQL_ENABLED:
             # Instantiate a File Log Row
             filename = Path(data_path).name
@@ -91,31 +101,33 @@ def on_file_stable(
             match = re.search(config.date_pattern, filename)
             if not match:
                 raise ValueError(
-                f"Cannot extract date from filename '{filename}' "
-                f"using pattern '{config.date_pattern}'"
-            )
+                    f"Cannot extract date from filename '{filename}' "
+                    f"using pattern '{config.date_pattern}'"
+                )
             file_date = datetime.strptime(match.group(1), config.date_format)
             detected_at = datetime.now()
+            if DB_CONNECTION_STRING is None:
+                raise ValueError(
+                    "DB_CONNECTION_STRING is not set while MSSQL_ENABLED is True."
+                )
             conn = get_db_connection(DB_CONNECTION_STRING)
             cursor = conn.cursor()
-            insert_query = f"""
+            insert_query = """
                 INSERT INTO Admin.FileLog
                 (FileName, FileSource, FileHash, FileDate, Detected_at)
+                OUTPUT inserted.FileID
                 VALUES (?,?,?,?,?)
-                SELECT SCOPE_IDENTITY()
                 ;
             """
             cursor.execute(
                 insert_query,
-                (
-                    filename,
-                    sourcename,
-                    file_hash,
-                    file_date,
-                    detected_at
-                ),
+                (filename, sourcename, file_hash, file_date, detected_at),
             )
-            file_id = cursor.fetchone()[0]
+            row = cursor.fetchone()
+            if row is None:
+                raise RuntimeError("Failed to retrieve FileID after insert.")
+
+            file_id = int(row[0])
             conn.commit()
             cursor.close()
             conn.close()
@@ -128,8 +140,11 @@ def on_file_stable(
                 ;
             """
             cursor.execute(dup_query, (file_hash,))
-            dup_count = cursor.fetchone()[0]
-            cursor.close() 
+            row = cursor.fetchone()
+            if row is None:
+                raise RuntimeError("Failed to retrieve duplicate count.")
+            dup_count = int(row[0])
+            cursor.close()
             conn.close()
             if dup_count > 1:
                 # Mark the FileID entry as DUPLICATE in the database
@@ -141,13 +156,13 @@ def on_file_stable(
                     WHERE FileID = ?
                 """
                 cursor.execute(dup_update_query, (file_id,))
-                conn.commit()   
+                conn.commit()
                 cursor.close()
                 conn.close()
 
                 logger.warning(
                     "Duplicate file detected based on hash for file %s. Moving to invalid folder.",
-                    data_path
+                    data_path,
                 )
                 dest = INVALID_FOLDER / Path(data_path).name
                 atomic_move(Path(data_path), dest, generate_unique=True)
@@ -158,7 +173,7 @@ def on_file_stable(
         # Move file to processed folder
         dest = PROCESSED_FOLDER / Path(data_path).name
         atomic_move(Path(data_path), dest, generate_unique=True)
-        
+
         logger.info("Moved %s to processed folder", data_path)
     except Exception:
         logger.exception("Loader Failed. Error processing %s", data_path)
@@ -166,7 +181,8 @@ def on_file_stable(
         dest = INVALID_FOLDER / Path(data_path).name
         atomic_move(Path(data_path), dest, generate_unique=True)
         logger.info("Moved %s to quarantine due to processing failure", data_path)
-        
+
+
 watcher = FileWatcher(
     watch_dir=LANDING_FOLDER,
     callback=on_file_stable,
@@ -183,14 +199,19 @@ def main():
     if MSSQL_ENABLED:
         DB_CONNECTION_STRING = build_connection_string()
         if not DB_CONNECTION_STRING:
-            logger.critical("MSSQL_ENABLED is true but the connection parameters are missing. Exiting...")
+            logger.critical(
+                "MSSQL_ENABLED is true but the connection parameters are missing. Exiting..."
+            )
             sys.exit(1)
         try:
             conn = get_db_connection(DB_CONNECTION_STRING)
             conn.close()
             logger.info("Database connectivity verified.")
-        except Exception as e:
-            logger.critical("MSSQL_ENABLED is true but database is unreachable. Exiting...", exc_info=True)
+        except Exception:
+            logger.critical(
+                "MSSQL_ENABLED is true but database is unreachable. Exiting...",
+                exc_info=True,
+            )
             sys.exit(1)
         # SQL connection confirmed and verified - add SQL log handler
         add_sql_handler(DB_CONNECTION_STRING)
@@ -198,7 +219,7 @@ def main():
     if HEARTBEAT_ENABLED:
         heartbeat_file = Path("/tmp/orchestrator_heartbeat")
         create_heartbeat(heartbeat_file)
-    
+
     watcher.start()
 
 

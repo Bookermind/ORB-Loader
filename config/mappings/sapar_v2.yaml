@@ -21,3 +21,5 @@ sapar:
       args:
         input_format: '%Y%m%d'
         output_format: '%d/%m/%Y'
+    amount:
+      source: Amount

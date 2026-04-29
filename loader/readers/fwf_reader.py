@@ -2,10 +2,10 @@ from .base import FileReader
 import pandas as pd
 
 class FWFReader(FileReader):
-    def __init__(self, encoding='utf-8-sig', has_header=True, colspecs=None, names=None):
+    def __init__(self, encoding='utf-8-sig', has_header=True, column_specs=None, names=None):
         self.encoding = encoding
         self.has_header = has_header
-        self.colspecs = colspecs
+        self.colspecs = column_specs
         self.names = names
     
     def read(self, file_path) -> pd.DataFrame:
@@ -18,9 +18,9 @@ class FWFReader(FileReader):
         )
 
 #Example call for this function:
-#reader = TXTReader(
+#reader = FWFReader(
 #    encoding='utf-8',
-#    colspecs=[(0, 10), (10, 20), (20, 35)],
+#    column_specs=[(0, 10), (10, 20), (20, 35)],
 #    names=['col1', 'col2', 'col3'],
 #    has_header=False
 #)

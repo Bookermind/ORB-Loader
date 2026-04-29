@@ -11,3 +11,452 @@
 2026-04-16 08:13:41 - loader.main - INFO - Record count and amount validation passed for file 'sapar_20260101.csv'
 2026-04-16 08:13:41 - __main__ - INFO - Loader Complete: /app/data/input/sapar_20260101.csv processed successfully
 2026-04-16 08:13:41 - __main__ - INFO - Moved /app/data/input/sapar_20260101.csv to processed folder
+2026-04-29 12:08:41 - managers.file_watcher - INFO - Watching /home/simon/Work/ORB-Loader/data/landing
+2026-04-29 12:09:02 - managers.file_watcher - INFO - Moving file to input: /home/simon/Work/ORB-Loader/data/landing/sapar_20260101.csv -> /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv
+2026-04-29 12:09:02 - __main__ - INFO - [PAIR READY] /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv (source: sapar, companion: none)
+2026-04-29 12:09:02 - loader.config.mappings_config - WARNING - Mapping file sapar2_v2.yaml does not contain key 'sapar' - skipping
+2026-04-29 12:09:02 - loader.config.mappings_config - INFO - Resolved mapping for 'sapar' date 2026-01-01 -> sapar_v2.yaml
+2026-04-29 12:09:02 - __main__ - ERROR - Loader Failed. Error processing /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv
+Traceback (most recent call last):
+  File "/home/simon/Work/ORB-Loader/orchestrator/main.py", line 170, in on_file_stable
+    run_loader(config, data_path, companion_path, DB_CONNECTION_STRING, file_id)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/simon/Work/ORB-Loader/loader/main.py", line 123, in run
+    reader = get_reader(
+        file_type=source_config.file_type,
+        **reader_kwargs,
+    )
+  File "/home/simon/Work/ORB-Loader/loader/readers/factory.py", line 14, in get_reader
+    return CSVReader(**kwargs)
+TypeError: CSVReader.__init__() got an unexpected keyword argument 'column_specs'
+2026-04-29 12:09:02 - __main__ - INFO - Moved /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv to quarantine due to processing failure
+2026-04-29 12:09:19 - managers.file_watcher - INFO - Stopped by user
+2026-04-29 12:10:50 - managers.file_watcher - INFO - Watching /home/simon/Work/ORB-Loader/data/landing
+2026-04-29 12:11:03 - managers.file_watcher - INFO - Moving file to input: /home/simon/Work/ORB-Loader/data/landing/sapar_20260101.csv -> /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv
+2026-04-29 12:11:03 - __main__ - INFO - [PAIR READY] /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv (source: sapar, companion: none)
+2026-04-29 12:11:03 - loader.config.mappings_config - WARNING - Mapping file sapar2_v2.yaml does not contain key 'sapar' - skipping
+2026-04-29 12:11:03 - loader.config.mappings_config - INFO - Resolved mapping for 'sapar' date 2026-01-01 -> sapar_v2.yaml
+2026-04-29 12:11:03 - __main__ - ERROR - Loader Failed. Error processing /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv
+Traceback (most recent call last):
+  File "/home/simon/Work/ORB-Loader/orchestrator/main.py", line 170, in on_file_stable
+    run_loader(config, data_path, companion_path, DB_CONNECTION_STRING, file_id)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/simon/Work/ORB-Loader/loader/main.py", line 123, in run
+    reader = get_reader(
+        file_type=source_config.file_type,
+        **reader_kwargs,
+    )
+  File "/home/simon/Work/ORB-Loader/loader/readers/factory.py", line 14, in get_reader
+    return CSVReader(**kwargs)
+TypeError: CSVReader.__init__() got an unexpected keyword argument 'column_specs'
+2026-04-29 12:11:03 - __main__ - INFO - Moved /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv to quarantine due to processing failure
+2026-04-29 12:11:06 - managers.file_watcher - INFO - Stopped by user
+2026-04-29 12:16:44 - managers.file_watcher - INFO - Watching /home/simon/Work/ORB-Loader/data/landing
+2026-04-29 12:16:57 - managers.file_watcher - INFO - Moving file to input: /home/simon/Work/ORB-Loader/data/landing/sapar_20260101.csv -> /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv
+2026-04-29 12:16:57 - __main__ - INFO - [PAIR READY] /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv (source: sapar, companion: none)
+2026-04-29 12:16:57 - loader.config.mappings_config - WARNING - Mapping file sapar2_v2.yaml does not contain key 'sapar' - skipping
+2026-04-29 12:16:57 - loader.config.mappings_config - INFO - Resolved mapping for 'sapar' date 2026-01-01 -> sapar_v2.yaml
+2026-04-29 12:16:57 - loader.main - WARNING - There are unexpected fields present in the data file: {'Amount'}
+2026-04-29 12:16:57 - loader.main - INFO - Field validation passed for file 'sapar_20260101.csv'
+2026-04-29 12:16:57 - __main__ - ERROR - Loader Failed. Error processing /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv
+Traceback (most recent call last):
+  File "/home/simon/Work/ORB-Loader/.venv/lib64/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'amount'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/simon/Work/ORB-Loader/orchestrator/main.py", line 170, in on_file_stable
+    run_loader(config, data_path, companion_path, DB_CONNECTION_STRING, file_id)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/simon/Work/ORB-Loader/loader/main.py", line 188, in run
+    file_valid = validate_data_file(
+        source_config,
+    ...<5 lines>...
+        MSSQL_ENABLED,
+    )
+  File "/home/simon/Work/ORB-Loader/loader/validators/record_validator.py", line 131, in validate_data_file
+    actual_count, actual_amount = calculate_actual_values(df, source_config)
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/home/simon/Work/ORB-Loader/loader/validators/record_validator.py", line 78, in calculate_actual_values
+    cleaned_amounts = df[amount_key].astype(str).str.replace(r"[£$€,]", "", regex=True)
+                      ~~^^^^^^^^^^^^
+  File "/home/simon/Work/ORB-Loader/.venv/lib64/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/home/simon/Work/ORB-Loader/.venv/lib64/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'amount'
+2026-04-29 12:16:57 - __main__ - INFO - Moved /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv to quarantine due to processing failure
+2026-04-29 12:17:04 - managers.file_watcher - INFO - Stopped by user
+2026-04-29 13:19:03 - managers.file_watcher - INFO - Watching /home/simon/Work/ORB-Loader/data/landing
+2026-04-29 13:19:14 - managers.file_watcher - INFO - Moving file to input: /home/simon/Work/ORB-Loader/data/landing/sapar_20260101.csv -> /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv
+2026-04-29 13:19:14 - __main__ - INFO - [PAIR READY] /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv (source: sapar, companion: none)
+2026-04-29 13:19:14 - loader.config.mappings_config - WARNING - Mapping file sapar2_v2.yaml does not contain key 'sapar' - skipping
+2026-04-29 13:19:14 - loader.config.mappings_config - INFO - Resolved mapping for 'sapar' date 2026-01-01 -> sapar_v2.yaml
+2026-04-29 13:19:14 - loader.main - INFO - Field validation passed for file 'sapar_20260101.csv'
+2026-04-29 13:19:14 - __main__ - ERROR - Loader Failed. Error processing /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv
+Traceback (most recent call last):
+  File "/home/simon/Work/ORB-Loader/.venv/lib64/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'amount'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/simon/Work/ORB-Loader/orchestrator/main.py", line 170, in on_file_stable
+    run_loader(config, data_path, companion_path, DB_CONNECTION_STRING, file_id)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/simon/Work/ORB-Loader/loader/main.py", line 188, in run
+    file_valid = validate_data_file(
+        source_config,
+    ...<5 lines>...
+        MSSQL_ENABLED,
+    )
+  File "/home/simon/Work/ORB-Loader/loader/validators/record_validator.py", line 131, in validate_data_file
+    actual_count, actual_amount = calculate_actual_values(df, source_config)
+                                  ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/home/simon/Work/ORB-Loader/loader/validators/record_validator.py", line 78, in calculate_actual_values
+    cleaned_amounts = df[amount_key].astype(str).str.replace(r"[£$€,]", "", regex=True)
+                      ~~^^^^^^^^^^^^
+  File "/home/simon/Work/ORB-Loader/.venv/lib64/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/home/simon/Work/ORB-Loader/.venv/lib64/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'amount'
+2026-04-29 13:19:14 - __main__ - INFO - Moved /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv to quarantine due to processing failure
+2026-04-29 13:19:20 - managers.file_watcher - INFO - Stopped by user
+2026-04-29 13:22:40 - managers.file_watcher - INFO - Watching /home/simon/Work/ORB-Loader/data/landing
+2026-04-29 13:22:57 - managers.file_watcher - INFO - Moving file to input: /home/simon/Work/ORB-Loader/data/landing/sapar_20260101.csv -> /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv
+2026-04-29 13:22:57 - __main__ - INFO - [PAIR READY] /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv (source: sapar, companion: none)
+2026-04-29 13:22:57 - loader.config.mappings_config - WARNING - Mapping file sapar2_v2.yaml does not contain key 'sapar' - skipping
+2026-04-29 13:22:57 - loader.config.mappings_config - INFO - Resolved mapping for 'sapar' date 2026-01-01 -> sapar_v2.yaml
+2026-04-29 13:22:57 - loader.main - INFO - Field validation passed for file 'sapar_20260101.csv'
+2026-04-29 13:22:57 - loader.validators.record_validator - INFO - Record validation passed for file /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv: expected count 3, actual count 3; expected amount 140, actual amount 140.0
+2026-04-29 13:22:57 - loader.main - INFO - Record count and amount validation passed for file 'sapar_20260101.csv'
+2026-04-29 13:22:57 - __main__ - INFO - Loader Complete: /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv processed successfully
+2026-04-29 13:22:57 - __main__ - INFO - Moved /home/simon/Work/ORB-Loader/data/input/sapar_20260101.csv to processed folder
+2026-04-29 13:23:07 - managers.file_watcher - INFO - Stopped by user
+2026-04-29 14:06:08 - managers.file_watcher - INFO - Watching /home/simon/Work/ORB-Loader/data/landing
+2026-04-29 14:06:12 - managers.file_watcher - INFO - Stopped by user
+2026-04-29 13:14:44 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:14:47 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:14:49 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:14:52 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:14:55 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:14:57 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:15:00 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:15:03 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:15:06 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:15:08 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:15:11 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:15:14 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:15:17 - __main__ - CRITICAL - MSSQL_ENABLED is true but database is unreachable. Exiting...
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 206, in main
+    conn = get_db_connection(DB_CONNECTION_STRING)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/orchestrator/utils/utilities.py", line 65, in get_db_connection
+    return mssql_python.connect(connection_string, timeout=5)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/db_connection.py", line 55, in connect
+    conn = Connection(
+           ^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/connection.py", line 332, in __init__
+    self._conn = ddbc_bindings.Connection(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: [Microsoft][ODBC Driver 18 for SQL Server]SSL Provider: [error:0A000086:SSL routines::certificate verify failed:self-signed certificate]
+2026-04-29 13:19:31 - __main__ - INFO - Database connectivity verified.
+2026-04-29 13:19:31 - root - INFO - SQL logging enabled for WARNING level and above
+2026-04-29 13:19:31 - managers.watchdog - INFO - Writing Initial heartbeat to /tmp/orchestrator_heartbeat
+2026-04-29 13:19:31 - managers.watchdog - INFO - Heartbeat Thread started, writing to /tmp/orchestrator_heartbeat
+2026-04-29 13:19:31 - managers.file_watcher - INFO - Watching /app/data/landing
+2026-04-29 13:19:52 - managers.file_watcher - INFO - Moving file to input: /app/data/landing/sapar_20260101.csv -> /app/data/input/sapar_20260101.csv
+2026-04-29 13:19:52 - __main__ - INFO - [PAIR READY] /app/data/input/sapar_20260101.csv (source: sapar, companion: none)
+2026-04-29 13:19:53 - __main__ - ERROR - Loader Failed. Error processing /app/data/input/sapar_20260101.csv
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 125, in on_file_stable
+    row = cursor.fetchone()
+          ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/cursor.py", line 2471, in fetchone
+    raise e
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/cursor.py", line 2456, in fetchone
+    self._increment_rownumber()
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/cursor.py", line 1253, in _increment_rownumber
+    raise InterfaceError(
+mssql_python.exceptions.InterfaceError: Driver Error: Cannot increment rownumber: no active result set.; DDBC Error: No active result set.
+2026-04-29 13:19:53 - __main__ - INFO - Moved /app/data/input/sapar_20260101.csv to quarantine due to processing failure
+2026-04-29 14:52:42 - __main__ - INFO - Database connectivity verified.
+2026-04-29 14:52:42 - root - INFO - SQL logging enabled for WARNING level and above
+2026-04-29 14:52:42 - managers.watchdog - INFO - Writing Initial heartbeat to /tmp/orchestrator_heartbeat
+2026-04-29 14:52:42 - managers.watchdog - INFO - Heartbeat Thread started, writing to /tmp/orchestrator_heartbeat
+2026-04-29 14:52:42 - managers.file_watcher - INFO - Watching /app/data/landing
+2026-04-29 14:53:04 - managers.file_watcher - INFO - Moving file to input: /app/data/landing/sapar_20260101.csv -> /app/data/input/sapar_20260101.csv
+2026-04-29 14:53:04 - __main__ - INFO - [PAIR READY] /app/data/input/sapar_20260101.csv (source: sapar, companion: none)
+2026-04-29 14:53:04 - loader.config.mappings_config - WARNING - Mapping file sapar2_v2.yaml does not contain key 'sapar' - skipping
+2026-04-29 14:53:04 - loader.config.mappings_config - INFO - Resolved mapping for 'sapar' date 2026-01-01 -> sapar_v2.yaml
+2026-04-29 14:53:04 - loader.main - INFO - Field validation passed for file 'sapar_20260101.csv'
+2026-04-29 14:53:04 - __main__ - ERROR - Loader Failed. Error processing /app/data/input/sapar_20260101.csv
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 170, in on_file_stable
+    run_loader(config, data_path, companion_path, DB_CONNECTION_STRING, file_id)
+  File "/app/loader/main.py", line 160, in run
+    cursor.execute(insert_stage_query, (file_id,))
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/cursor.py", line 1488, in execute
+    check_error(ddbc_sql_const.SQL_HANDLE_STMT.value, self.hstmt, ret)
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/helpers.py", line 38, in check_error
+    raise_exception(error_info.sqlState, error_info.ddbcErrorMsg)
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/exceptions.py", line 563, in raise_exception
+    raise exception_class
+mssql_python.exceptions.IntegrityError: Driver Error: Integrity constraint violation; DDBC Error: [Microsoft][SQL Server]Cannot insert the value NULL into column 'FileID', table 'DebtApps.admin.StageLog'; column does not allow nulls. INSERT fails.
+2026-04-29 14:53:04 - __main__ - INFO - Moved /app/data/input/sapar_20260101.csv to quarantine due to processing failure
+2026-04-29 15:01:18 - __main__ - INFO - Database connectivity verified.
+2026-04-29 15:01:18 - root - INFO - SQL logging enabled for WARNING level and above
+2026-04-29 15:01:18 - managers.watchdog - INFO - Writing Initial heartbeat to /tmp/orchestrator_heartbeat
+2026-04-29 15:01:18 - managers.watchdog - INFO - Heartbeat Thread started, writing to /tmp/orchestrator_heartbeat
+2026-04-29 15:01:18 - managers.file_watcher - INFO - Watching /app/data/landing
+2026-04-29 15:01:29 - managers.file_watcher - INFO - Moving file to input: /app/data/landing/sapar_20260101.csv -> /app/data/input/sapar_20260101.csv
+2026-04-29 15:01:29 - __main__ - INFO - [PAIR READY] /app/data/input/sapar_20260101.csv (source: sapar, companion: none)
+2026-04-29 15:01:29 - __main__ - WARNING - Duplicate file detected based on hash for file /app/data/input/sapar_20260101.csv. Moving to invalid folder.
+2026-04-29 15:03:26 - __main__ - INFO - Database connectivity verified.
+2026-04-29 15:03:26 - root - INFO - SQL logging enabled for WARNING level and above
+2026-04-29 15:03:26 - managers.watchdog - INFO - Writing Initial heartbeat to /tmp/orchestrator_heartbeat
+2026-04-29 15:03:26 - managers.watchdog - INFO - Heartbeat Thread started, writing to /tmp/orchestrator_heartbeat
+2026-04-29 15:03:26 - managers.file_watcher - INFO - Watching /app/data/landing
+2026-04-29 15:03:40 - managers.file_watcher - INFO - Moving file to input: /app/data/landing/sapar_20260101.csv -> /app/data/input/sapar_20260101.csv
+2026-04-29 15:03:40 - __main__ - INFO - [PAIR READY] /app/data/input/sapar_20260101.csv (source: sapar, companion: none)
+2026-04-29 15:03:40 - loader.config.mappings_config - WARNING - Mapping file sapar2_v2.yaml does not contain key 'sapar' - skipping
+2026-04-29 15:03:40 - loader.config.mappings_config - INFO - Resolved mapping for 'sapar' date 2026-01-01 -> sapar_v2.yaml
+2026-04-29 15:03:40 - loader.main - INFO - Field validation passed for file 'sapar_20260101.csv'
+2026-04-29 15:03:40 - __main__ - ERROR - Loader Failed. Error processing /app/data/input/sapar_20260101.csv
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 171, in on_file_stable
+    run_loader(config, data_path, companion_path, DB_CONNECTION_STRING, file_id)
+  File "/app/loader/main.py", line 177, in run
+    row = cursor.fetchone()
+          ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/cursor.py", line 2471, in fetchone
+    raise e
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/cursor.py", line 2456, in fetchone
+    self._increment_rownumber()
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/cursor.py", line 1253, in _increment_rownumber
+    raise InterfaceError(
+mssql_python.exceptions.InterfaceError: Driver Error: Cannot increment rownumber: no active result set.; DDBC Error: No active result set.
+2026-04-29 15:03:40 - __main__ - INFO - Moved /app/data/input/sapar_20260101.csv to quarantine due to processing failure
+2026-04-29 15:11:21 - __main__ - INFO - Database connectivity verified.
+2026-04-29 15:11:21 - root - INFO - SQL logging enabled for WARNING level and above
+2026-04-29 15:11:21 - managers.watchdog - INFO - Writing Initial heartbeat to /tmp/orchestrator_heartbeat
+2026-04-29 15:11:21 - managers.watchdog - INFO - Heartbeat Thread started, writing to /tmp/orchestrator_heartbeat
+2026-04-29 15:11:21 - managers.file_watcher - INFO - Watching /app/data/landing
+2026-04-29 15:11:35 - managers.file_watcher - INFO - Moving file to input: /app/data/landing/sapar_20260101.csv -> /app/data/input/sapar_20260101.csv
+2026-04-29 15:11:35 - __main__ - INFO - [PAIR READY] /app/data/input/sapar_20260101.csv (source: sapar, companion: none)
+2026-04-29 15:11:35 - loader.config.mappings_config - WARNING - Mapping file sapar2_v2.yaml does not contain key 'sapar' - skipping
+2026-04-29 15:11:35 - loader.config.mappings_config - INFO - Resolved mapping for 'sapar' date 2026-01-01 -> sapar_v2.yaml
+2026-04-29 15:11:35 - loader.main - INFO - Field validation passed for file 'sapar_20260101.csv'
+2026-04-29 15:11:35 - __main__ - ERROR - Loader Failed. Error processing /app/data/input/sapar_20260101.csv
+Traceback (most recent call last):
+  File "/app/orchestrator/main.py", line 171, in on_file_stable
+    run_loader(config, data_path, companion_path, DB_CONNECTION_STRING, file_id)
+  File "/app/loader/main.py", line 176, in run
+    row = cursor.fetchone()
+          ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/cursor.py", line 2471, in fetchone
+    raise e
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/cursor.py", line 2456, in fetchone
+    self._increment_rownumber()
+  File "/usr/local/lib/python3.11/site-packages/mssql_python/cursor.py", line 1253, in _increment_rownumber
+    raise InterfaceError(
+mssql_python.exceptions.InterfaceError: Driver Error: Cannot increment rownumber: no active result set.; DDBC Error: No active result set.
+2026-04-29 15:11:35 - __main__ - INFO - Moved /app/data/input/sapar_20260101.csv to quarantine due to processing failure
+2026-04-29 15:18:21 - __main__ - INFO - Database connectivity verified.
+2026-04-29 15:18:21 - root - INFO - SQL logging enabled for WARNING level and above
+2026-04-29 15:18:21 - managers.watchdog - INFO - Writing Initial heartbeat to /tmp/orchestrator_heartbeat
+2026-04-29 15:18:21 - managers.watchdog - INFO - Heartbeat Thread started, writing to /tmp/orchestrator_heartbeat
+2026-04-29 15:18:21 - managers.file_watcher - INFO - Watching /app/data/landing
+2026-04-29 15:18:34 - managers.file_watcher - INFO - Moving file to input: /app/data/landing/sapar_20260101.csv -> /app/data/input/sapar_20260101.csv
+2026-04-29 15:18:34 - __main__ - INFO - [PAIR READY] /app/data/input/sapar_20260101.csv (source: sapar, companion: none)
+2026-04-29 15:18:34 - loader.config.mappings_config - WARNING - Mapping file sapar2_v2.yaml does not contain key 'sapar' - skipping
+2026-04-29 15:18:34 - loader.config.mappings_config - INFO - Resolved mapping for 'sapar' date 2026-01-01 -> sapar_v2.yaml
+2026-04-29 15:18:34 - loader.main - INFO - Field validation passed for file 'sapar_20260101.csv'
+2026-04-29 15:18:34 - loader.validators.record_validator - INFO - Record validation passed for file /app/data/input/sapar_20260101.csv: expected count 3, actual count 3; expected amount 140, actual amount 140.0
+2026-04-29 15:18:34 - loader.main - INFO - Record count and amount validation passed for file 'sapar_20260101.csv'
+2026-04-29 15:18:34 - __main__ - INFO - Loader Complete: /app/data/input/sapar_20260101.csv processed successfully
+2026-04-29 15:18:34 - __main__ - INFO - Moved /app/data/input/sapar_20260101.csv to processed folder

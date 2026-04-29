@@ -7,21 +7,26 @@ services:
       - SA_PASSWORD=${LOGGING_DB_PASSWORD}
       - DB_NAME=${LOGGING_DB_NAME}
       - DB_USER=${LOGGING_DB_USER}
-      - DB_SCHEMA=${LOGGING_DB_SCHEMA}
+      - ADMIN_DB_SCHEMA=${LOGGING_DB_SCHEMA}
+      - LOOKUP_DB_SCHEMA=${LOOKUP_DB_SCHEMA}
     ports:
       - "1433:1433"
     volumes:
       - mssql_data:/var/opt/mssql
       #      - ./data:/var/opt/mssql
-      - ./mssql/entrypoint.sh:/entrypoint.sh
-      - ./mssql/init.d:/docker-entrypoint-initdb.d
+      - ./mssql/entrypoint.sh:/entrypoint.sh:z
+      - ./mssql/init.d:/docker-entrypoint-initdb.d:z
     healthcheck:
-      test: [ "CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$SA_PASSWORD\" -Q 'SELECT 1' || exit 1" ]
+      test:
+        [
+          "CMD-SHELL",
+          '/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U $$DB_USER -P "$$SA_PASSWORD" -Q ''SELECT 1'' || exit 1',
+        ]
       interval: 10s
       timeout: 3s
       retries: 5
       start_period: 30s
-    entrypoint: [ "/bin/bash", "/entrypoint.sh" ]
+    entrypoint: ["/bin/bash", "/entrypoint.sh"]
 
   orchestrator:
     build:
@@ -40,7 +45,6 @@ services:
       - PROCESSED_FOLDER_PATH=${PROCESSED_FOLDER_PATH}
       # Database connection for SQL logging (if enabled)
       - MSSQL_ENABLED=${MSSQL_ENABLED}
-      - LOGGING_DB_DRIVER=${LOGGING_DB_DRIVER}
       - LOGGING_DB_HOST=${LOGGING_DB_HOST}
       - LOGGING_DB_NAME=${LOGGING_DB_NAME}
       - LOGGING_DB_USER=${LOGGING_DB_USER}
@@ -52,15 +56,19 @@ services:
       - FILE_LOG_LEVEL=${FILE_LOG_LEVEL}
       - HEARTBEAT=${HEARTBEAT}
     volumes:
-      - ./data/landing:${LANDING_FOLDER_PATH}
-      - ./data/input:${INPUT_FOLDER_PATH}
-      - ./data/quarantine/invalid:${INVALID_FOLDER_PATH}
-      - ./data/quarantine/unknown:${UNKNOWN_FOLDER_PATH}
-      - ./data/processed:${PROCESSED_FOLDER_PATH}
-      - ./config:${CONFIG_FOLDER_PATH}
-      - ./logs:${LOG_FOLDER_PATH}
+      - ./data/landing:${LANDING_FOLDER_PATH}:Z
+      - ./data/input:${INPUT_FOLDER_PATH}:z
+      - ./data/quarantine/invalid:${INVALID_FOLDER_PATH}:z
+      - ./data/quarantine/unknown:${UNKNOWN_FOLDER_PATH}:z
+      - ./data/processed:${PROCESSED_FOLDER_PATH}:z
+      - ./config:${CONFIG_FOLDER_PATH}:z
+      - ./logs:${LOG_FOLDER_PATH}:z
     healthcheck:
-      test: ["CMD-SHELL", "test -f /tmp/orchestrator_heartbeat && [ $$(( $$(date +%s) - $$(date -r /tmp/orchestrator_heartbeat +%s) )) -lt 60 ] || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "test -f /tmp/orchestrator_heartbeat && [ $$(( $$(date +%s) - $$(date -r /tmp/orchestrator_heartbeat +%s) )) -lt 60 ] || exit 1",
+        ]
       interval: 30s
       timeout: 5s
       retries: 3
